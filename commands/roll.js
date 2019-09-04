@@ -6,7 +6,7 @@ module.exports = {
 	name: 'roll',
 	description: 'Rolls dice',
 	args: true,
-	usage: '[# of dice]d[# of sides on die]',
+	usage: '[# of dice]d[# of sides on die]', // ~roll 69d100
 	execute(msg, args) {
 
 		const arg = args[0];
@@ -27,6 +27,7 @@ module.exports = {
 					const randomArray = result.random.data;
 					const sum = randomArray.reduce((a, b) => a + b);
 					msg.channel.send('Rolled ' + arg + ': ' + sum);
+					if (sum == 69) msg.reply(' that\'s the sex number!');
 				})
 				.catch(error => {
 					msg.channel.send(errorMsg);
