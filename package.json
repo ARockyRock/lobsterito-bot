@@ -1,0 +1,17 @@
+{
+  "name": "lobsterito",
+  "version": "0.69.69",
+  "description": "Discord bot for the LAR server.",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "ARockyRock",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "eslint": "^5.16.0",
+    "random-org": "^1.1.0"
+  },
+  "devDependencies": {}
+}
