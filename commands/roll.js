@@ -6,7 +6,7 @@ module.exports = {
 	name: 'roll',
 	description: 'Rolls dice',
 	args: true,
-	usage: '[# of dice]d[# of sides on die]', // ~roll 69d100
+	usage: '[# of dice]d[# of sides on die]', // ~roll 69d420
 	execute(msg, args) {
 
 		const arg = args[0];
@@ -17,6 +17,7 @@ module.exports = {
 
 		if (dSides == 1) {
 			msg.channel.send(dRolls);
+			if (sum == 69) msg.reply(' you are one fake fuck!');
 		} else if (dSides == 0 || dRolls == 0) {
 			msg.channel.send('Null');
 		} else if (isNaN(dRolls) || isNaN(dSides)) {

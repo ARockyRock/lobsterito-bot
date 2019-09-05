@@ -47,6 +47,8 @@ client.on('message', msg => {
 
 		if (daPhrase.includes('🥛')) {	// TODO: figure out how to do this automatically
 			daPhrase = '🥛';
+		} else if (daPhrase.includes('checkmate')) {
+			daPhrase = 'checkmate';
 		}
 
 		const phrase = client.phrases.get(daPhrase);
