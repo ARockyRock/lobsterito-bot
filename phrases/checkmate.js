@@ -5,7 +5,7 @@ module.exports = {
 	name: 'checkmate',
 	description: 'checkmate atheists - nick',
 	execute(msg) {
-		check.setAttachment('.\\imgs\\checkmateLibby.jpg', 'checkmateLibby.jpg');
+		check.setAttachment('.\\imgs\\checkmateLibby.jpg');
 		msg.channel.send(check);
 	},
 };

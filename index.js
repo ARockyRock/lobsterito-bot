@@ -3,7 +3,7 @@ const fs = require('fs');
 const Discord = require('discord.js');
 /* const config = require('./config.json'); */
 // loads only the values being called from config.json
-const { prefix, token } = require('./config.json');
+const { prefix, token, errorMsg } = require('./config.json');
 
 // const cooldowns = new Discord.Collection();
 
@@ -108,10 +108,10 @@ client.on('message', msg => {
 		}*/
 
 		try {
-			command.execute(msg, args);
+			command.execute(msg, args, client);
 		} catch (error) {
 			console.error(error);
-			msg.reply('there was an error executing the command.');
+			msg.reply(errorMsg);
 		}
 	}
 

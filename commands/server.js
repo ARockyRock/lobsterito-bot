@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 
 module.exports = {
 	name: 'server',
+	alias:['info'],
 	description: 'Displays server info.',
 	usage: '',
 	guildOnly: true,

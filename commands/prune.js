@@ -1,7 +1,8 @@
 module.exports = {
 	name: 'prune',
+	aliases:['remove'],
 	description: 'Removes the entered amount of messages',
-	args: 'true',
+	args: true,
 	usage: '[amount]',
 	execute(msg, args) {
 		const sender = msg.member;
