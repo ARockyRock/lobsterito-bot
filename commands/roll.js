@@ -29,7 +29,7 @@ module.exports = {
 					const randomArray = result.random.data;
 					const sum = randomArray.reduce((a, b) => a + b);
 					msg.channel.send('Rolled ' + arg + ': ' + sum);
-					if (sum == 69) msg.reply(' that\'s the sex number!');
+					if (sum == 69) msg.reply('that\'s the sex number!');
 				})
 				.catch(error => {
 					msg.channel.send(errorMsg);
