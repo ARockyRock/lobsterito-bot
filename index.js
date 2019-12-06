@@ -36,8 +36,8 @@ client.once('ready', () => {
 client.login(token);
 
 // listens for messages
-// ${property} calls for a value from an objects property
-client.on('message', msg => {
+// ${var} calls a variable within a string
+client.on('message', msg => {	// START of on(message) event
 
 	if (msg.author.bot) {	// if message read is from a bot it exits code
 		return;
@@ -116,24 +116,12 @@ client.on('message', msg => {
 	}
 
 
-});
+});	// END of on(message) event
 
-/* old command loader
-	if (command === 'ping') {
-		client.commands.get('ping').execute(msg, args);
-	} else if (command === 'beep') {
-		client.commands.get('beep').execute(msg, args);
-	} else if (command === 'server') {
-		client.commands.get('server').execute(msg, args);
-	} else if (command === 'user-info') {
-		client.commands.get('user-info').execute(msg, args);
-	} else if (command === 'args-info') {
-		client.commands.get('args-info').execute(msg, args);
-	} else if (command === 'kick') {
-		client.commands.get('kick').execute(msg, args);
-	} else if (command === 'avatar') {
-		client.commands.get('avatar').execute(msg, args);
-	} else if (command === 'prune') {
-		client.commands.get('prune').execute(msg, args);
+// listens for voice channel updates
+client.on('voiceStateUpdate', (oldMember, newMember) => { // START of on(voiceStateUpdate)
+	const newUserChannel = newMember.voiceChannelID;
+	if (newUserChannel == '406611345887461377') {
+		oldMember.send('You just got owned.');
 	}
-*/
+}); // END of on(voiceStateUpdate)
