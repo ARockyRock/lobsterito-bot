@@ -4,6 +4,7 @@ module.exports = {
 	usage: '',
 	guildOnly: true,
 	execute(msg, args) {
-		msg.channel.send(`<@${msg.channel.members.random().id}>`);
+		msg.channel.send(`${msg.channel.members.random().user.username}`);
+
 	},
 };

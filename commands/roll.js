@@ -4,6 +4,7 @@ const random = new RandomOrg({ apiKey: randomAPI });
 
 module.exports = {
 	name: 'roll',
+	aliases: ['r'],
 	description: 'Rolls dice',
 	args: true,
 	usage: '[# of dice]d[# of sides on die]', // ~roll 69d420
@@ -17,7 +18,7 @@ module.exports = {
 
 		if (dSides == 1) {
 			msg.channel.send(dRolls);
-			if (sum == 69) msg.reply(' you are one fake fuck!');
+			if (dRolls == 69) msg.reply(' you are one fake fuck!');
 		} else if (dSides == 0 || dRolls == 0) {
 			msg.channel.send('Null');
 		} else if (isNaN(dRolls) || isNaN(dSides)) {
@@ -28,7 +29,7 @@ module.exports = {
 					const randomArray = result.random.data;
 					const sum = randomArray.reduce((a, b) => a + b);
 					msg.channel.send('Rolled ' + arg + ': ' + sum);
-					if (sum == 69) msg.reply(' that\'s the sex number!');
+					if (sum == 69) msg.reply('that\'s the sex number!');
 				})
 				.catch(error => {
 					msg.channel.send(errorMsg);
