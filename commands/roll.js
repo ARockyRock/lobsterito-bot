@@ -1,4 +1,5 @@
 const { randomAPI, errorMsg } = require('../config.json');
+// randomAPI requires a key from random.org
 const RandomOrg = require('random-org');
 const random = new RandomOrg({ apiKey: randomAPI });
 

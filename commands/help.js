@@ -3,8 +3,8 @@ const { prefix } = require('../config.json');
 module.exports = {
 	name: 'help',
 	description: 'List of all my commands or help with a specific command.',
-	aliases: ['commands'],
-	usage: '[command name]',
+	aliases: ['commands', 'h'],
+	usage: '[command]',
 	execute(msg, args) {
 		const data = [];
 		const { commands } = msg.client;
@@ -43,9 +43,8 @@ module.exports = {
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 		if (command.description) data.push(`**Description:** ${command.description}`);
 		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
-		/*
-		data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
-		*/
+		if (command.cooldown) data.push(`**Cooldown:** ${command.cooldown} second(s)`);
+
 
 		msg.channel.send(data, { split: true });
 

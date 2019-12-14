@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 // loads only the values being called from config.json
 const { prefix, token, errorMsg } = require('./config.json');
 
-// const cooldowns = new Discord.Collection();
+const cooldowns = new Discord.Collection();
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -39,13 +39,13 @@ client.login(token);
 // ${var} calls a variable within a string
 client.on('message', msg => {	// START of on(message) event
 
-	if (msg.author.bot) {	// if message read is from a bot it exits code
+	if (msg.author.bot) {		// if message read is from a bot it exits code
 		return;
 	} else if (!msg.content.startsWith(prefix)) {
 
 		let daPhrase = msg.content;
 
-		if (daPhrase.includes('🥛')) {	// TODO: figure out how to do this automatically
+		if (daPhrase.includes('🥛')) {		// TODO: figure out how to do this automatically
 			daPhrase = '🥛';
 		} else if (daPhrase.includes('checkmate')) {
 			daPhrase = 'checkmate';
@@ -85,27 +85,29 @@ client.on('message', msg => {	// START of on(message) event
 			return msg.channel.send(reply);
 		}
 
-		/* SPAM CONTROL ***to be improved upon***
-
+		//	*** TIMEOUT ***
 		// if command isn't in the collection it will be added
 		if (!cooldowns.has(command.name)) {
 			cooldowns.set(command.name, new Discord.Collection());
 		}
 		// stores current timestamp
 		const now = Date.now();
-		// receives the Collection for triggered command
+		// receives the cooldown for triggered command
 		const timestamps = cooldowns.get(command.name);
-		// receives cooldown amount, defaults to 3 if none, and coverts to milliseconds
-		const cooldownAmount = (command.cooldown || 3) * 1000;
+		// receives cooldown amount and coverts to milliseconds
+		const cooldownAmount = command.cooldown * 1000;
 
 		if (timestamps.has(msg.author.id)) {
 			const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
 			// if expirationTime hasn't passed it'll return the user how much time is left
 			if (now < expirationTime) {
 				const timeLeft = (expirationTime - now) / 1000;
-				return msg.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+				return msg.reply(`you have ${timeLeft.toFixed(1)} second(s) before you can use the \`${command.name}\` command.`);
 			}
-		}*/
+		} else {
+			timestamps.set(msg.author.id, now);
+			setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+		}
 
 		try {
 			command.execute(msg, args, client);
