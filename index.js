@@ -27,13 +27,17 @@ for (const file of phraseFiles) {
 	client.phrases.set(phrase.name, phrase);
 }
 
+
+
 // to check if bot is on
 client.once('ready', () => {
 	console.log('Logging in!');
 });
 
+
 // bot login token
 client.login(token);
+
 
 // listens for messages
 // ${var} calls a variable within a string
@@ -120,10 +124,12 @@ client.on('message', msg => {	// START of on(message) event
 
 });	// END of on(message) event
 
+
 // listens for voice channel updates
 client.on('voiceStateUpdate', (oldMember, newMember) => { // START of on(voiceStateUpdate)
 	const newUserChannel = newMember.voiceChannelID;
 	if (newUserChannel == '406611345887461377') {
 		oldMember.send('You just got owned.');
 	}
+
 }); // END of on(voiceStateUpdate)
