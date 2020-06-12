@@ -5,7 +5,7 @@ module.exports = {
 	usage: '[channel id] [phrase]',
 	execute(msg, args, client) {
 		const channelID = args.shift();
-		client.channels.get(channelID).send(args.join(' '));
+		client.channels.cache.get(channelID).send(args.join(' '));
 
 	},
 };
