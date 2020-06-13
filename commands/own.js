@@ -11,11 +11,11 @@ module.exports = {
 		const taggedUser = msg.mentions.members.first();
 		const sender = msg.member;
 
-		if (taggedUser.voiceChannel == null) {
+		if (taggedUser.voice.channelID == null) {
 			msg.reply('can\'t own a user not in voice.');
 		} else {
 			// moves user to the servers afk channel
-			taggedUser.setVoiceChannel('406611345887461377')
+			taggedUser.voice.setChannel('406611345887461377')
 				.then(() => msg.channel.send(`<@${taggedUser.id}> has been owned by <@${sender.id}>.`))
 				.catch(console.error);
 		}

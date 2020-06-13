@@ -22,7 +22,7 @@ module.exports = {
 					msg.reply('there was a problem kicking that user.');
 				});
 		} else {
-			msg.channel.send(`You want to kick ${taggedUser.user.username}.`);
+			msg.channel.send(`You tried to kick ${taggedUser.user.username}, but you slipped and fell on your ass.`);
 		}
 	},
 };

@@ -7,10 +7,10 @@ module.exports = {
 	usage: '',
 	guildOnly: true,
 	execute(msg, args) {
-		const serverInfoEmbed = new Discord.RichEmbed()
+		const serverInfoEmbed = new Discord.MessageEmbed()
 		// #36393e bg blend
 			.setColor('#b62827')
-			.setThumbnail(msg.guild.iconURL)
+			.setThumbnail(msg.guild.iconURL())
 			.setTitle('Server Information')
 			.addField('Server Name', `${msg.guild.name}`)
 			.addField('Total Members', `${msg.guild.memberCount}`)
