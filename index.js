@@ -28,7 +28,6 @@ for (const file of phraseFiles) {
 }
 
 
-
 // to check if bot is on
 client.once('ready', () => {
 	console.log('Logging in!');
@@ -126,10 +125,8 @@ client.on('message', msg => {	// START of on(message) event
 
 
 // listens for voice channel updates
-client.on('voiceStateUpdate', (oldMember, newMember) => { // START of on(voiceStateUpdate)
-	const newUserChannel = newMember.voiceChannelID;
-	if (newUserChannel == '406611345887461377') {
-		oldMember.send('You just got owned.');
+client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStateUpdate)
+	if (newState.channelID == '406611345887461377') {
+		newState.member.send('You just got owned.');
 	}
-
 }); // END of on(voiceStateUpdate)
