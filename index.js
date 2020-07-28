@@ -126,7 +126,7 @@ client.on('message', msg => {	// START of on(message) event
 
 // listens for voice channel updates
 client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStateUpdate)
-	if (newState.channelID == '406611345887461377') {
+	if (newState.channelID == newState.guild.afkChannelID) {
 		newState.member.send('You just got owned.');
 	}
 }); // END of on(voiceStateUpdate)
