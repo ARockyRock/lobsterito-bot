@@ -14,10 +14,17 @@ module.exports = {
 		if (taggedUser.voice.channelID == null) {
 			msg.reply('can\'t own a user not in voice.');
 		} else {
-			// moves user to the servers afk channel
-			taggedUser.voice.setChannel('406611345887461377')
+			if ((Math.floor(Math.random() * 100)) < 2) {
+				// Random chance (2%) the own command is reversed
+				sender.voice.setChannel('406611345887461377')
+				.then(() => msg.channel.send(`<@${sender.id}> has been owned by <@${taggedUser.id}>.`))
+				.catch(console.error);
+			} else {
+				//Own command functions normally
+				taggedUser.voice.setChannel('406611345887461377')
 				.then(() => msg.channel.send(`<@${taggedUser.id}> has been owned by <@${sender.id}>.`))
 				.catch(console.error);
+			}
 		}
 	},
 };
