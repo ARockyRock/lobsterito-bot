@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+const uno_reverse = new Discord.MessageAttachment('.\\imgs\\uno_reverse.png');
 module.exports = {
 	name: 'own',
 	alias: ['owned'],
@@ -16,6 +18,7 @@ module.exports = {
 		} else {
 			if ((Math.floor(Math.random() * 100)) < 2) {
 				// Random chance (2%) the own command is reversed
+				msg.channel.send(uno_reverse);
 				sender.voice.setChannel('406611345887461377')
 				.then(() => msg.channel.send(`<@${sender.id}> has been owned by <@${taggedUser.id}>.`))
 				.catch(console.error);
