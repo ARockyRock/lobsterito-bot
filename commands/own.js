@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const uno_reverse = new Discord.MessageAttachment('.\\imgs\\uno_reverse.png');
+const uno_reverse = new Discord.MessageAttachment('./imgs/uno_reverse.png');
 module.exports = {
 	name: 'own',
 	alias: ['owned'],
