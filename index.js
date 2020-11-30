@@ -48,7 +48,7 @@ client.on('message', msg => {	// START of on(message) event
 
 		let daPhrase = msg.content;
 
-		if (daPhrase.includes('🥛')) {		// TODO: figure out how to do this automatically
+		if (daPhrase.includes('🥛')) {		// TODO: do this automatically like with commands
 			daPhrase = '🥛';
 		} else if (daPhrase.includes('checkmate')) {
 			daPhrase = 'checkmate';
