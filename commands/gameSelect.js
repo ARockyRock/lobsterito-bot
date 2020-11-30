@@ -7,8 +7,8 @@ module.exports = {
 	execute(msg, args) {
 
 		const mentionedRoles = msg.mentions.roles;
-		const topRoleBorder = msg.guild.roles.cache.get('782606962449448961');
-		const bottomRoleBorder = msg.guild.roles.cache.get('782607030363095060');
+		const topRoleBorder = msg.guild.roles.cache.get('534225575745683456');
+		const bottomRoleBorder = msg.guild.roles.cache.get('519016638972952577');
 
 		let guildRoles = msg.guild.roles;
 		guildRoles = guildRoles.cache.filter(role => (role.comparePositionTo(topRoleBorder) < 0) && (role.comparePositionTo(bottomRoleBorder) > 0));
