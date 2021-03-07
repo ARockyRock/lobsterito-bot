@@ -10,11 +10,11 @@ module.exports = {
 		const topRoleBorder = msg.guild.roles.cache.get('534225575745683456');
 		const bottomRoleBorder = msg.guild.roles.cache.get('519016638972952577');
 
+		let message = '';
 		let guildRoles = msg.guild.roles;
 		guildRoles = guildRoles.cache.filter(role => (role.comparePositionTo(topRoleBorder) < 0) && (role.comparePositionTo(bottomRoleBorder) > 0));
 
 		if (args[0] === 'list') {
-			let message = '';
 			guildRoles.each( role => message += role.name + ' | ');
 			msg.channel.send(message);
 			msg.delete();
@@ -28,6 +28,7 @@ module.exports = {
 				if (args[0] === 'add') {
 					try {
 						msg.member.roles.add(role);
+						message += role.name + ' , ';
 						success = 1;
 						msg.delete();
 					}
@@ -56,9 +57,9 @@ module.exports = {
 		});
 
 		if (success === 1)
-			msg.channel.send('Role(s) added.');
+			msg.channel.send(`${message} were added.`);
 		else if (success === 2)
-			msg.channel.send('Role(s) removed');
+			msg.channel.send(`${message} were removed.`);
 
 	},
 };
