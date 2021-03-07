@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const check = new Discord.MessageAttachment('.\\imgs\\checkmateLibby.jpg');
+const check = new Discord.MessageAttachment('./imgs/checkmateLibby.jpg');
 
 module.exports = {
 	name: 'checkmate',
