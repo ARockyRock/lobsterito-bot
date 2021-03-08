@@ -16,6 +16,8 @@ module.exports = {
 				console.error(data);
 				msg.channel.send("Update script had an error.");
 			});
+
+			process.exit();
 		}
 		else
 		{
