@@ -17,7 +17,9 @@ module.exports = {
 				msg.channel.send("Update script had an error.");
 			});
 
-			process.exit();
+			setTimeout(() => {
+				process.exit();
+			}, 3000);
 		}
 		else
 		{
