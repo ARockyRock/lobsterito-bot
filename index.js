@@ -1,9 +1,12 @@
 // loads necessary packages and configs
 const fs = require('fs');
 const Discord = require('discord.js');
+var OwnedL = require('./OwnedLeaderboard.json'); //Reads the Owned Leaderboard JSON file and saves to memory
+
 /* const config = require('./config.json'); */
 // loads only the values being called from config.json
 const { prefix, token, errorMsg } = require('./config.json');
+
 
 const cooldowns = new Discord.Collection();
 
@@ -40,6 +43,7 @@ client.login(token);
 
 // listens for messages
 // ${var} calls a variable within a string
+
 client.on('message', msg => {	// START of on(message) event
 
 	if (msg.author.bot) {		// if message read is from a bot it exits code
@@ -128,5 +132,41 @@ client.on('message', msg => {	// START of on(message) event
 client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStateUpdate)
 	if (newState.channelID == newState.guild.afkChannelID) {
 		newState.member.send('You just got owned.');
+
+		var OwnedA = 0; //How many times someone has been owned
+		var OwnedID =''; //How is getting owned
+		var OwnedPlace = 0; //Where in the JSON string that person is
+
+		//Looks through the entire string to find where the the ownee is in the string
+		for(var i = 0; i < OwnedL.length; i++){
+ 	 		if(OwnedL[i].UserID == newState.member.user.id){
+    			OwnedA = OwnedL[i].OwnedAmount;
+    			OwnedID = OwnedL[i].UserID;
+    			OwnedPlace=i;
+  			}
+		}
+		//If they have not been owned before then OwnedID will still be empty
+		if (OwnedID == ''){
+			const newOwned = {					//Creates a new string containing their id and the amount of times owned 
+			UserID: newState.member.user.id,
+    			OwnedAmount: 1
+			}
+			fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(OwnedL.concat(newOwned)), err => { //Adds the above string to the existing string and writes to JSON file
+    			if (err) {
+        			console.log('Error writing file', err)
+    			}
+			})
+			OwnedL = OwnedL.concat(newOwned); //Saves new ownee in memory
+		}
+		//If they have been owned before
+		else{
+        	OwnedA++; //Increments amount of times owned
+			OwnedL[OwnedPlace].OwnedAmount = OwnedA; //Updates the owned memory string to the new amount
+			fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(OwnedL), err => { //Saves the new amount to a JSON file
+    			if (err) {
+        			console.log('Error writing file', err)
+    			}
+			})
+		}
 	}
 }); // END of on(voiceStateUpdate)
