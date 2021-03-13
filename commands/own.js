@@ -10,9 +10,8 @@ module.exports = {
 	usage: '@[user]',
 	guildOnly: true,
 	execute(msg, args, client) {
-		args=args.shift().toLowerCase();
 
-		if (args != 'leaderboard'){
+		if (args != 'leaderboard' && args != 'Leaderboard'){
 			if (!msg.mentions.users.size) return msg.reply('I owned your mother last night.');
 
 			const taggedUser = msg.mentions.members.first();
