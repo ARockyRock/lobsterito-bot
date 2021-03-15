@@ -19,7 +19,7 @@ module.exports = {
 
 			setTimeout(() => {
 				process.exit();
-			}, 3000);
+			}, 5000);
 		}
 		else
 		{
