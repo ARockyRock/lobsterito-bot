@@ -10,7 +10,7 @@ module.exports = {
 	name: 'own',
 	alias: ['owned'],
 	description: 'Sends the user to the owned zone for they have just been owned.',
-	cooldown: 1800,
+	cooldown: 0,
 	usage: '@[user]',
 	guildOnly: true,
 	execute(msg, args, client) {
@@ -18,27 +18,55 @@ module.exports = {
 		// check for leaderboard arguement
 		if (args[0].toLowerCase() === 'leaderboard')
 		{
-			let OwnedL = JSON.parse(fs.readFileSync('./OwnedLeaderboard.json', 'utf-8')) //Reads the JSON watch time
+			let OwnedL = JSON.parse(fs.readFileSync('./OwnedLeaderboard.json', 'utf-8')) //Reads the JSON each time
 
-			OwnedL.sort(function(a, b){				//Sorts the array from highest to least
-   		 		return b.OwnedAmount - a.OwnedAmount;
+			OwnedL.sort(function(a, b){		//Sorts the array from highest to least
+				return b.OwnedAmount - a.OwnedAmount;
 			});
 
 			var OwnedLB =[];
-			for(var i = 0; i < OwnedL.length; i++)	{		//Creates the leaderboard by going through the sorted array and getting usernames and amount owned
- 				var UserN = client.users.cache.get(OwnedL[i].UserID); //Gets usernames
-				OwnedLB = OwnedLB.concat([UserN.username, OwnedL[i].OwnedAmount].join(': ')); //Makes array of leaderboard as Name: #
+			var IDs = [];
+
+			for(var i = 0; i < OwnedL.length; i++){        //Creates the leaderboard by going through the sorted array and getting usernames and amount owned
+				IDs = IDs.concat(OwnedL[i].UserID)
 			}
 
-			const serverInfoEmbed = new Discord.MessageEmbed() //Makes the leaderboard into a fancy embeded message.
-			// #36393e bg blend
-				.setColor('#b62827')
-				.setThumbnail(msg.guild.iconURL())
-				.setTitle('Owned Leaderboard')
-				.setDescription(OwnedLB)
-				.setTimestamp()
-				.setFooter(`${msg.guild.name}`);
-			msg.channel.send(serverInfoEmbed);
+			const promise = new Promise((resolve, reject) =>{
+				msg.guild.members.fetch({ user: IDs})
+				.then(abc =>{
+					UserN = Array.from(abc.mapValues(def => def.user.username));
+					resolve(UserN);
+				})
+				.catch(console.error);
+			});
+
+			promise.then(res => {
+				UserNames = [];
+				for (var i = 0; i<IDs.length; i++){
+					var known = false;
+					for(var e = 0; e < UserN.length; e++){
+						if (UserN[e][0] == IDs[i]){    
+							UserNames [i] = UserN[e][1];
+							known = true;
+						}
+					}
+					if (!known) {UserNames[i] = 'Some bitch'}
+				}
+
+				for(var i = 0; i < OwnedL.length; i++) {        //Creates the leaderboard by going through the sorted array and getting usernames and amount owned
+						OwnedLB = OwnedLB.concat([UserNames[i], OwnedL[i].OwnedAmount].join(': ')); //Makes array of leaderboard as Name: #    
+				}
+
+				const serverInfoEmbed = new Discord.MessageEmbed() //Makes the leaderboard into a fancy embeded message.
+					// #36393e bg blend
+					.setColor('#b62827')
+					.setThumbnail(msg.guild.iconURL())
+					.setTitle('Owned Leaderboard')
+					.setDescription(OwnedLB)
+					.setTimestamp()
+					.setFooter(`${msg.guild.name}`);
+				msg.channel.send(serverInfoEmbed);
+			});
 
 			return;
 		}
