@@ -10,7 +10,7 @@ module.exports = {
 	name: 'own',
 	alias: ['owned'],
 	description: 'Sends the user to the owned zone for they have just been owned.',
-	cooldown: 0,
+	cooldown: 900,
 	usage: '@[user]',
 	guildOnly: true,
 	execute(msg, args, client) {
