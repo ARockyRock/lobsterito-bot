@@ -20,8 +20,8 @@ module.exports = {
 		{
 			let OwnedL = JSON.parse(fs.readFileSync('./OwnedLeaderboard.json', 'utf-8')) //Reads the JSON each time
 
-			OwnedL.sort(function(a, b){		//Sorts the array from highest to least
-				return b.OwnedAmount - a.OwnedAmount;
+			OwnedL.sort(function(a, b){		//Sorts the array from least owned to most
+				return a.OwnedAmount - b.OwnedAmount;
 			});
 
 			var OwnedLB =[];
