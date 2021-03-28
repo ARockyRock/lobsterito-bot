@@ -14,6 +14,9 @@ module.exports = {
 	usage: '@[user]',
 	guildOnly: true,
 	execute(msg, args, client) {
+		// if the user didn't @ a user
+		if (!msg.mentions.users.size) return msg.reply('I owned your mother last night.');
+		
 		var Own = JSON.parse(fs.readFileSync('./OwnedLeaderboard.json', 'utf-8')); 	//Reads the own leaderboard
 		// check for leaderboard arguement
 		if (args[0].toLowerCase() === 'leaderboard'){
@@ -67,9 +70,6 @@ module.exports = {
 			});
 			return;
 		}
-
-		// if the user didn't @ a user
-		if (!msg.mentions.users.size) return msg.reply('I owned your mother last night.');
 
 		const taggedUser = msg.mentions.members.first();
 		const sender = msg.member;
