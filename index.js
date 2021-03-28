@@ -1,9 +1,6 @@
 // loads necessary packages and configs
 const fs = require('fs');
 const Discord = require('discord.js');
-var OwnedL = require('./OwnedLeaderboard.json'); //Reads the Owned Leaderboard JSON file and saves to memory
-
-/* const config = require('./config.json'); */
 // loads only the values being called from config.json
 const { prefix, token, errorMsg } = require('./config.json');
 
@@ -46,7 +43,7 @@ client.login(token);
 
 client.on('message', msg => {	// START of on(message) event
 
-	if (msg.author.bot) {		// if message read is from a bot it exits code
+	if (msg.author.bot && msg.author.id != client.user.id) {		// if message read is from a bot it exits code
 		return;
 	} else if (!msg.content.startsWith(prefix)) {
 
@@ -104,7 +101,7 @@ client.on('message', msg => {	// START of on(message) event
 		// receives cooldown amount and coverts to milliseconds
 		const cooldownAmount = command.cooldown * 1000;
 
-		if (timestamps.has(msg.author.id)) {
+		if (timestamps.has(msg.author.id) && msg.author.id != client.user.id) {
 			const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
 			// if expirationTime hasn't passed it'll return the user how much time is left
 			if (now < expirationTime) {
@@ -130,43 +127,42 @@ client.on('message', msg => {	// START of on(message) event
 
 // listens for voice channel updates
 client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStateUpdate)
-	if (newState.channelID == newState.guild.afkChannelID) {
-		newState.member.send('You just got owned.');
+	var Own = JSON.parse(fs.readFileSync('./OwnedLeaderboard.json', 'utf-8')); //Read Owned leaderboard json
+	
+	//Check if someone has activity in the afk channel
+	if (newState.channelID == newState.guild.afkChannelID) { 
+		
+		newState.member.send('You just got owned.'); //Send ownage message
+		var owneeIndex = Own.findIndex(obj => obj.UserID==newState.member.user.id); //Find where they are in the json array
 
-		var OwnedA = 0; //How many times someone has been owned
-		var OwnedID =''; //How is getting owned
-		var OwnedPlace = 0; //Where in the JSON string that person is
-
-		//Looks through the entire string to find where the the ownee is in the string
-		for(var i = 0; i < OwnedL.length; i++){
- 	 		if(OwnedL[i].UserID == newState.member.user.id){
-    			OwnedA = OwnedL[i].OwnedAmount;
-    			OwnedID = OwnedL[i].UserID;
-    			OwnedPlace=i;
-  			}
-		}
 		//If they have not been owned before then OwnedID will still be empty
-		if (OwnedID == ''){
-			const newOwned = {					//Creates a new string containing their id and the amount of times owned 
+		if (owneeIndex < 0){
+			const newOwner = {					//Creates a new string containing their id and the amount of times owned 
 			UserID: newState.member.user.id,
-    			OwnedAmount: 1
+    			OwnedAmount: 1,
+    			Karma: 0,
+    			Debt: false
 			}
-			fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(OwnedL.concat(newOwned)), err => { //Adds the above string to the existing string and writes to JSON file
-    			if (err) {
-        			console.log('Error writing file', err)
-    			}
-			})
-			OwnedL = OwnedL.concat(newOwned); //Saves new ownee in memory
+			Own = Own.concat(newOwner); //Updates array in memory
 		}
-		//If they have been owned before
-		else{
-        	OwnedA++; //Increments amount of times owned
-			OwnedL[OwnedPlace].OwnedAmount = OwnedA; //Updates the owned memory string to the new amount
-			fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(OwnedL), err => { //Saves the new amount to a JSON file
-    			if (err) {
-        			console.log('Error writing file', err)
-    			}
-			})
+		//If they have been owned before increase owned amount by 1
+		else Own[owneeIndex].OwnedAmount++;
+	}
+
+	//If someone has joined a channel that isnt the afk channel
+	else if ((oldState.channelID != newState.channelID) && newState.channelID != undefined) {
+		var debtorIndex = [];																	
+		for (var i = 0; i < Own.length; i++) {					//Find the index in the json array of those who have a ownage debt
+  			if (Own[i].Debt == true) debtorIndex.push(i);
+		}
+
+		for (var i = 0; i < debtorIndex.length; i++) {			//Start dispensing justice if the person that owes debt joins a channel
+			if (newState.member.user.id == Own[debtorIndex[i]].UserID) {
+			client.channels.cache.get('542520454947143690').send(`~own <@${newState.member.user.id}>`);
+			Own[debtorIndex[i]].Debt = false
+			}
 		}
 	}
+	fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(Own), err => {if(err) msg.reply(errorMsg)}) //Save the updated json array to a file 
+
 }); // END of on(voiceStateUpdate)
