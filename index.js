@@ -2,7 +2,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 // loads only the values being called from config.json
-const { prefix, token, errorMsg } = require('./config.json');
+const { prefix, token, errorMsg, botChannel } = require('./config.json');
 
 
 const cooldowns = new Discord.Collection();
@@ -158,7 +158,7 @@ client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStat
 
 		for (var i = 0; i < debtorIndex.length; i++) {			//Start dispensing justice if the person that owes debt joins a channel
 			if (newState.member.user.id == Own[debtorIndex[i]].UserID) {
-			client.channels.cache.get(/*Add channel id the bot should send the command to*/).send(`~own <@${newState.member.user.id}>`);
+			client.channels.cache.get(botChannel).send(`~own <@${newState.member.user.id}>`);
 			Own[debtorIndex[i]].Debt = false
 			}
 		}
