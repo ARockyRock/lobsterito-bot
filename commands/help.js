@@ -8,6 +8,7 @@ module.exports = {
 	execute(msg, args) {
 		const data = [];
 		const { commands } = msg.client;
+		console.log(msg)
 
 		// if there are 0 arguements then the user wants a whole help document
 		if (!args.length) {
@@ -17,10 +18,10 @@ module.exports = {
 			data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command.`);
 
 			// DMs the user all commands stored in the data array and splits message if at char limit
-			return msg.author.send(data, { split: true })
+			return msg.author.send(data.join('\n'), { split: true })
 				.then (() => {
 					// if the command was done in DM then it exits the then
-					if (msg.channel.type === 'dm') return;
+					if (msg.guildId == null) return;
 					// replies to user in the channel
 					msg.reply('I\'ve sent you a DM with all my commands.');
 				})
@@ -46,7 +47,7 @@ module.exports = {
 		if (command.cooldown) data.push(`**Cooldown:** ${command.cooldown} second(s)`);
 
 
-		msg.channel.send(data, { split: true });
+		msg.channel.send(data.join('\n'), { split: true });
 
 
 	},

@@ -5,6 +5,7 @@ fs = require('fs');
 const { randomAPI, errorMsg } = require('../config.json');
 const RandomOrg = require('random-org');
 const random = new RandomOrg({ apiKey: randomAPI });
+const StatsFunc = require ('../StatsFunc.js')
 
 module.exports = {
     name: 'own',
@@ -13,24 +14,27 @@ module.exports = {
     cooldown: 900,
     usage: '@[user]',
     guildOnly: true,
-    execute(msg, args, client) {
+    execute(msg, args, client, Stats) {
+
         // if the user didn't @ a user
         if (!args.length) return msg.reply('I owned your mother last night.');
 
-        var Own = JSON.parse(fs.readFileSync('./OwnedLeaderboard.json', 'utf-8')); //Reads the own leaderboard
         // check for leaderboard arguement
         if (args[0].toLowerCase() === 'leaderboard') {
 
-            Own.sort(function(a, b) { //Sorts the array from least owned to most
-                return a.OwnedAmount - b.OwnedAmount;
+            var StatsSort =Object.entries(Stats);
+            //console.log(StatsSort[1][1])
+            StatsSort.sort(function (a, b) { //Sorts the array from least owned to most
+               return a[1].OwnedAmount - b[1].OwnedAmount;
             });
-
-            var OwnedLB = [];
+            
+            //console.log(StatsSort[1][1].OwnedAmount);
             var IDs = [];
 
-            for (var i = 0; i < Own.length; i++) { //Creates the leaderboard by going through the sorted array and getting usernames and amount owned
-                IDs = IDs.concat(Own[i].UserID)
+            for (var i = 0; i < StatsSort.length; i++) { //Creates the leaderboard by going through the sorted array and getting usernames and amount owned
+                IDs = IDs.concat(StatsSort[i][0])
             }
+            
 
             const promise = new Promise((resolve, reject) => { //Creates a promise to fetch all the owned members from discord
                 msg.guild.members.fetch({ user: IDs })
@@ -53,88 +57,78 @@ module.exports = {
                     }
                     if (!known) UserNames[i] = 'Some bitch'; //If it can't find the username for some reason
                 }
-
-                for (var i = 0; i < Own.length; i++) { //Creates the leaderboard by going through the sorted array and getting usernames and amount owned
-                    OwnedLB = OwnedLB.concat([UserNames[i], Own[i].OwnedAmount].join(': ')); //Makes array of leaderboard as Name: #    
+            
+                var OwnedLB = []
+                for (var i = 0; i < StatsSort.length; i++) { //Creates the leaderboard by going through the sorted array and getting usernames and amount owned
+                    OwnedLB = OwnedLB.concat([UserNames[i], StatsSort[i][1].OwnedAmount].join(': ')); //Makes array of leaderboard as Name: #    
                 }
 
-                const serverInfoEmbed = new Discord.MessageEmbed() //Makes the leaderboard into a fancy embeded message.
+                const OwnedLeaderboard = new Discord.MessageEmbed() //Makes the leaderboard into a fancy embeded message.
                     // #36393e bg blend
                     .setColor('#b62827')
                     .setThumbnail(msg.guild.iconURL())
                     .setTitle('Owned Leaderboard')
-                    .setDescription(OwnedLB)
+                    .setDescription(OwnedLB.join('\n'))
                     .setTimestamp()
                     .setFooter(`${msg.guild.name}`);
-                msg.channel.send(serverInfoEmbed);
+                msg.channel.send({ embeds: [OwnedLeaderboard]});
             });
+
             return;
         }
 
         const taggedUser = msg.mentions.members.first();
+        //console.log(AddToStats);
         const sender = msg.member;
 
         //Checks if the bot sends the message since it is not bound by the rules
         if (sender.id == client.user.id) {
-            taggedUser.voice.setChannel(sender.guild.afkChannelID)
+            taggedUser.voice.setChannel(sender.guild.afkChannelId)
                 .then(() => msg.channel.send(`<@${taggedUser.id}> has been owned by the people.`))
                 .catch(console.error);
             return;
         }
 
         // if user is not in a voice channel
-        if (taggedUser.voice.channelID == null) {
-            msg.reply('can\'t own a user not in voice.');
-        } else {
-            var Ownerindex = Own.findIndex(obj => obj.UserID == sender.id); //Finds the index of the person doing the owning  
-            var Owneeindex = Own.findIndex(obj => obj.UserID == taggedUser.id); //Finds teh index of the owned person
+
+        if (taggedUser.voice.channelId == null) {
+            msg.reply('Can\'t own a user not in voice.');
+        } else if (taggedUser.voice.channelId == sender.guild.afkChannelId){
+            Stats[sender.id].Karma++;
+            sender.voice.setChannel(sender.guild.afkChannelId)
+                .then(() => msg.channel.send(`<@${taggedUser.id}> is already in the owned zone idiot. Why don\'t you join them.`))
+                .catch(console.error);
+        } 
+        else {
             //Checks if the owner has an entry in the own leaderboard file and if not then creates one for them
-            if (Ownerindex < 0) {
-                const newOwner = { //Creates a new entry for them in the leaderboard
-                    UserID: sender.id,
-                    OwnedAmount: 0,
-                    Karma: 1,
-                    Debt: false
-                }
-                Own = Own.concat(newOwner);
-                Ownerindex = Own.length - 1
-            }
-            if (Owneeindex < 0) {
-                const newOwnee = { //Creates a new entry for them in the leaderboard
-                    UserID: taggedUser.id,
-                    OwnedAmount: 0,
-                    Karma: 0,
-                    Debt: false
-                }
-                Own = Own.concat(newOwnee);
-                Owneeindex = Own.length - 1
-            }
+            if (Stats[sender.id] == undefined) Stats = StatsFunc.AddToStats(sender.id,Stats);
             //If they have been owned/owned someone before
-            else Own[Ownerindex].Karma++; //Increments amount of times they've owned people
+            else Stats[sender.id].Karma++; //Increments amount of times they've owned people
 
             random.generateIntegers({ min: 0, max: 100, n: 1 }) //Generates a random number from 0-100 using True Randomness(TM)
                 .then(result => {
                     const randomArray = result.random.data;
                     //The chance to get reversed on increases exponentially with how often you own
-                    if (randomArray[0] < Math.pow(2, Own[Ownerindex].Karma) && !Own[Ownerindex].Debt) {
-                        Own[Ownerindex].Karma = 0; //Resets your karma if you've been reversed
+                    if (randomArray[0] < Math.pow(2, Stats[sender.id].Karma) && !Stats[sender.id].Debt) {
+                        Stats[sender.id].Karma = 0; //Resets your karma if you've been reversed
                         msg.channel.send(uno_reverse); //Sends uno card
-                        sender.voice.setChannel(sender.guild.afkChannelID)
+                        sender.voice.setChannel(sender.guild.afkChannelId)
                             .then(() => msg.channel.send(`<@${sender.id}> has been owned by <@${taggedUser.id}>.`))
                             .catch((error) => {
                                 msg.channel.send('I will find you and I will own you.')
-                                Own[Ownerindex].Debt = true
-                                fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(Own), err => { if (err) msg.reply(errorMsg) })
+                                Stats[sender.id].Debt = true
+                                Stats[sender.id].TimesInDebt++;
+                                StatsFunc.SavesStats(Stats);
                             });
-                    } else if (!Own[Ownerindex].Debt) {
-                        Own[Owneeindex].Karma = Math.max(0, Own[Owneeindex].Karma--)
-                        taggedUser.voice.setChannel(sender.guild.afkChannelID)
+                    } else if (!Stats[sender.id].Debt) {
+                        Stats[sender.id].Karma = Math.max(0, Stats[sender.id].Karma--)
+                        taggedUser.voice.setChannel(sender.guild.afkChannelId)
                             .then(() => msg.channel.send(`<@${taggedUser.id}> has been owned by <@${sender.id}>.`))
                             .catch(console.error);
                     } else {
                         msg.channel.send('You have lost your owning privileges.')
                     }
-                    fs.writeFile('./OwnedLeaderboard.json', JSON.stringify(Own), err => { if (err) msg.reply(errorMsg) })
+                    StatsFunc.SaveStats(Stats);
                 })
                 .catch(error => {
                     msg.channel.send(errorMsg);

@@ -1,8 +1,13 @@
 {
-	"prefix": "",
-	"token": "",
-	"mdBlock": "```",
-	"randomAPI": "",
-	"errorMsg": "SHIT IS FUCEKD"
-	"botChannel": ""
+  "prefix": "Your desired prefix here",
+  "token": "Your token here",
+  "mdBlock": "```",
+	"randomAPI": "Your random api here",
+	"errorMsg": "Your error message here",
+	"botChannel": "Your bot channel here",
+	"CringeEmoji": "Your cringe designating emoji here",
+	"CringeTimeout": "Your time until things can't be marked as cringe here",
+	"CringeValue": "Your how much is needed before it is officially cringe here",
+	"OfficialCringeEmoji": "Your offical cringe emoji here",
+	"MarkovDataSize": "Your number of messages to collect for the markov chain here"
 }

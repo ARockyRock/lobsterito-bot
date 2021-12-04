@@ -5,6 +5,8 @@ module.exports = {
 	guildOnly: true,
 	execute(msg, args) {
 		if (!args.length) {
+			console.log(msg.guild.channels);
+
 			return msg.channel.send(`The server's region is located in ${msg.guild.region}.`);
 		} else if (args[0] === msg.guild.region) {
 			return msg.channel.send('The server is already in this region.');

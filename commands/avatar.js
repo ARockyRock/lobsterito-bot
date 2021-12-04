@@ -5,13 +5,17 @@ module.exports = {
 	usage: '@[user]',
 	execute(msg, args) {
 		if (!msg.mentions.users.size) {
-			return msg.channel.send(`Your avatar: <${msg.author.displayAvatarURL()}>`);
+			return msg.channel.send({
+				content:'Your avatar:',
+				files: [`${msg.author.avatarURL()}`]		
+			});
 		}
 
 		const avatarList = msg.mentions.users.map(user => {
-			return `${user.username}'s avatar: <${user.displayAvatarURL()}>`;
+			return msg.channel.send({
+				content: `${user.username}'s avatar`,
+				files: [`${user.avatarURL()}`]		
+			});
 		});
-		// sends an array of strings as a message; by default, discord.js will .join() the array with \n
-		msg.channel.send(avatarList);
 	},
 };

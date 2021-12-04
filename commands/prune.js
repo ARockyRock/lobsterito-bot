@@ -7,7 +7,7 @@ module.exports = {
 	execute(msg, args) {
 		const sender = msg.member;
 
-		if (sender.hasPermission('ADMINISTRATOR')) {
+		if (sender.permissions.has([true])){
 			// the +1 includes the command message itself to the pruning
 			const amount = parseInt(args[0]) + 1;
 
