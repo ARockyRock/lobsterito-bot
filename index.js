@@ -294,7 +294,7 @@ client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStat
 	
 	//***********************If someone joined any other channel but not the afk channel***********************
 
-	else if ((oldState.channelId != newState.channelId) && newState.channelId != undefined) {
+	else if (oldState.channelId != newState.channelId && newState.channelId != undefined) {
 
 
 		//***********************Set when they last joined***********************
@@ -312,10 +312,10 @@ client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStat
 
 
 	//***********************If someone leaves***********************
-
-	else if ((oldState.channelId != newState.channelId) && newState.channelId == undefined && oldState.channelId != newState.guild.afkChannelId) {
+	else if (newState.channelId == undefined && oldState.channelId != newState.guild.afkChannelId && Stats[UserID].JoinCall != 0) {
 		Stats[UserID].LeaveCall = Date.now();
-		Stats[UserID].CallTime += Stats[UserID].LeaveCall - Stats[UserID].JoinCall; 
+		Stats[UserID].CallTime += Stats[UserID].LeaveCall - Stats[UserID].JoinCall;
+		Stats[UserID].JoinCall = 0;  
 	}
 
 
