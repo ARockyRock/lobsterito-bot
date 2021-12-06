@@ -26,7 +26,6 @@ module.exports = {
 			.catch(console.error)
 		})
 		Promise.all([PromiseRoles, PromiseEmojis]).then(res =>{
-			console.log(NumEmojis)
 			const serverInfoEmbed = new Discord.MessageEmbed()
 			// #36393e bg blend
 				.setColor('#b62827')
