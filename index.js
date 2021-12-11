@@ -279,7 +279,7 @@ client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStat
 
 	UserID = newState.member.user.id;
 
-	if (Stats[UserID] == undefined) StatsFunc.AddToStats(UserID);
+	if (Stats[UserID] == undefined) StatsFunc.AddToStats(UserID, Stats);
 
 	//***********************If someone is in the afk channel***********************
 
