@@ -7,14 +7,14 @@ module.exports = {
 		if (!msg.mentions.users.size) {
 			return msg.channel.send({
 				content:'Your avatar:',
-				files: [`${msg.author.avatarURL()}`]		
+				files: [`${msg.author.displayAvatarURL({size: 2048})}`]		
 			});
 		}
 
 		const avatarList = msg.mentions.users.map(user => {
 			return msg.channel.send({
 				content: `${user.username}'s avatar`,
-				files: [`${user.avatarURL()}`]		
+				files: [`${user.displayAvatarURL({size: 2048})}`]		
 			});
 		});
 	},
