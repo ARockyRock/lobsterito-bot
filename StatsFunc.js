@@ -6,6 +6,7 @@ function AddToStats(UserIDFunc, Stats){
 		Debt: false,
 		TimesInDebt: 0,	
 		CallTime: 0,
+		RecordCallTime: 0,
 		JoinCall: 0,
 		LeaveCall: 0,
 		CringePosts: 0,

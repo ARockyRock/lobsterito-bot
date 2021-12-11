@@ -108,8 +108,9 @@ client.on('messageCreate', msg => { // START of on(message) event
 			//Records message content unless the message is empty (files) or if the message is a link or if its from itself
 			if (!MarkovBlacklist.includes(msg.content.substring(0,1)) && msg.content.substring(0,4) != 'http' && UserID != client.user.id) {
 				MsgContent = msg.content;
+				MsgContent = MsgContent.replaceAll('\n',' ');
 				if (MarkovGraylist.includes(msg.content.substring(0,1))) 
-					MsgContent = MsgContent.replaceAll(MarkovGraylist[MarkovGraylist.indexOf(MsgContent.substring(0,1))],'')
+					MsgContent = MsgContent.replaceAll(MarkovGraylist[MarkovGraylist.indexOf(MsgContent.substring(0,1))],'');
 
 				if (MarkovTraining[UserID] == undefined){
 					MarkovTraining[UserID] = {
@@ -120,7 +121,7 @@ client.on('messageCreate', msg => { // START of on(message) event
 				}
 				MarkovTraining[UserID].Posts += 1; 
 				if (MarkovTraining[UserID].Posts <= MarkovDataSize && MarkovTraining[UserID].Rollover == false)
-					MarkovTraining[UserID].Data = MarkovTraining[UserID].Data.concat(MsgContent)
+					MarkovTraining[UserID].Data = MarkovTraining[UserID].Data.concat(MsgContent);
 				else{
 					if (MarkovTraining[UserID].Posts >= MarkovDataSize) MarkovTraining[UserID].Posts = 0;
 					MarkovTraining[UserID].Rollover = true;
@@ -287,8 +288,11 @@ client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStat
 		Stats[UserID].OwnedAmount++;
 
 		if ((oldState.channelId != newState.channelId) && oldState.channelId != undefined) {
+			if (Stats[UserID].RecordCallTime < Stats[UserID].LeaveCall - Stats[UserID].JoinCall)
+				Stats[UserID].RecordCallTime = Stats[UserID].LeaveCall - Stats[UserID].JoinCall;
 			Stats[UserID].LeaveCall = Date.now();
-			Stats[UserID].CallTime += Stats[UserID].LeaveCall - Stats[UserID].JoinCall; 
+			Stats[UserID].CallTime += Stats[UserID].LeaveCall - Stats[UserID].JoinCall;
+			Stats[UserID].JoinCall = 0;  
 		}
 	}
 	
@@ -314,6 +318,8 @@ client.on('voiceStateUpdate', (oldState, newState) => { // START of on(voiceStat
 	//***********************If someone leaves***********************
 	else if (newState.channelId == undefined && oldState.channelId != newState.guild.afkChannelId && Stats[UserID].JoinCall != 0) {
 		Stats[UserID].LeaveCall = Date.now();
+		if (Stats[UserID].RecordCallTime < Stats[UserID].LeaveCall - Stats[UserID].JoinCall || Stats[UserID].RecordCallTime == undefined)
+			Stats[UserID].RecordCallTime = Stats[UserID].LeaveCall - Stats[UserID].JoinCall;
 		Stats[UserID].CallTime += Stats[UserID].LeaveCall - Stats[UserID].JoinCall;
 		Stats[UserID].JoinCall = 0;  
 	}
