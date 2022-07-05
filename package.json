@@ -9,7 +9,7 @@
   "author": "ARockyRock",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.7.5",
     "discord.js": "^13.3.1",
     "eslint": "^8.4.0",
